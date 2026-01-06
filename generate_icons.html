@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Generate Icons</title>
+</head>
+
+<body>
+    <h1>Right-click on each canvas and "Save image as..."</h1>
+    <p>Save as icon16.png, icon48.png, icon128.png in the <code>icons/</code> folder</p>
+
+    <h3>16x16</h3>
+    <canvas id="c16" width="16" height="16"></canvas>
+
+    <h3>48x48</h3>
+    <canvas id="c48" width="48" height="48"></canvas>
+
+    <h3>128x128</h3>
+    <canvas id="c128" width="128" height="128"></canvas>
+
+    <script>
+        function drawIcon(canvas) {
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width;
+
+            // Green background
+            ctx.fillStyle = '#53fc18';
+            ctx.fillRect(0, 0, size, size);
+
+            // Black circle for robot face
+            ctx.fillStyle = '#0b0e0f';
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size * 0.4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Green eyes
+            ctx.fillStyle = '#53fc18';
+            const eyeSize = size * 0.1;
+            ctx.beginPath();
+            ctx.arc(size * 0.35, size * 0.45, eyeSize, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(size * 0.65, size * 0.45, eyeSize, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Smile
+            ctx.strokeStyle = '#53fc18';
+            ctx.lineWidth = size * 0.05;
+            ctx.beginPath();
+            ctx.arc(size / 2, size * 0.5, size * 0.2, 0.2 * Math.PI, 0.8 * Math.PI);
+            ctx.stroke();
+        }
+
+        drawIcon(document.getElementById('c16'));
+        drawIcon(document.getElementById('c48'));
+        drawIcon(document.getElementById('c128'));
+    </script>
+</body>
+
+</html>
