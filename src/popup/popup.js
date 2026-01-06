@@ -45,13 +45,10 @@ function exportConfig() {
             username: t.username || '',
             condition: t.condition || 'contains',
             keyword: t.keyword,
-            // Map internal 'chat' to 'sendMessage' for compatibility if needed, 
-            // or keep as is if we want to stick to internal schema. 
-            // The user asked for "same structure as config.example.json".
-            // config.example.json uses: "action": "sendMessage", "actionValue": "..."
             action: t.action === 'chat' ? 'sendMessage' : t.action,
             actionValue: t.action === 'chat' ? t.message : null,
-            delay: t.delay || 0
+            delay: t.delay || 0,
+            enabled: t.enabled !== false // Default to true
         }))
     };
 
@@ -73,7 +70,6 @@ function importConfig(e) {
         try {
             const data = JSON.parse(event.target.result);
             if (Array.isArray(data.triggers)) {
-                // Map external generic keys back to internal keys
                 triggers = data.triggers.map(t => ({
                     name: t.name || t.keyword,
                     userType: t.userType || 'any',
@@ -81,8 +77,9 @@ function importConfig(e) {
                     condition: t.condition || 'contains',
                     keyword: t.keyword,
                     action: t.action === 'sendMessage' ? 'chat' : t.action,
-                    message: t.action === 'sendMessage' ? t.actionValue : (t.message || ''), // Support both
-                    delay: t.delay || 0
+                    message: t.action === 'sendMessage' ? t.actionValue : (t.message || ''),
+                    delay: t.delay || 0,
+                    enabled: t.enabled !== false
                 }));
 
                 chrome.storage.local.set({ triggers }, () => {
@@ -98,49 +95,92 @@ function importConfig(e) {
         }
     };
     reader.readAsText(file);
-    e.target.value = ''; // Reset input
+    e.target.value = '';
 }
 
 function renderTriggers() {
     const list = document.getElementById('triggersList');
     list.innerHTML = '';
 
+    if (triggers.length === 0) {
+        list.innerHTML = '<div style="text-align:center;color:#999;padding:20px;">No triggers configured</div>';
+        return;
+    }
+
     triggers.forEach((trigger, index) => {
+        const isActive = trigger.enabled !== false;
+
         const item = document.createElement('div');
-        item.className = 'trigger-item';
+        item.className = 'trigger-item' + (isActive ? '' : ' disabled');
 
-        const info = document.createElement('div');
-        info.className = 'trigger-info';
+        // Header with name and toggle
+        const header = document.createElement('div');
+        header.className = 'trigger-header';
 
-        const name = document.createElement('div');
-        name.className = 'trigger-keyword';
+        const name = document.createElement('span');
+        name.className = 'trigger-name';
         name.textContent = trigger.name || trigger.keyword;
 
+        const controls = document.createElement('div');
+        controls.className = 'trigger-controls';
+
+        // Mini toggle switch
+        const toggleLabel = document.createElement('label');
+        toggleLabel.className = 'switch switch-mini';
+        const toggleInput = document.createElement('input');
+        toggleInput.type = 'checkbox';
+        toggleInput.checked = isActive;
+        toggleInput.onchange = () => toggleTrigger(index);
+        const toggleSlider = document.createElement('span');
+        toggleSlider.className = 'slider round';
+        toggleLabel.appendChild(toggleInput);
+        toggleLabel.appendChild(toggleSlider);
+
+        controls.appendChild(toggleLabel);
+        header.appendChild(name);
+        header.appendChild(controls);
+
+        // Details
         const details = document.createElement('div');
-        details.className = 'trigger-action';
+        details.className = 'trigger-details';
         let actionDisplay = trigger.action;
         if (trigger.action === 'chat') actionDisplay = 'Send Chat';
-
         details.innerHTML = `
             ${trigger.condition === 'exact' ? '[Exact]' : '[Contains]'} "${trigger.keyword}"<br>
-            Action: ${actionDisplay} ${trigger.delay > 0 ? `(${trigger.delay}ms)` : ''}
+            Action: ${actionDisplay} ${trigger.delay > 0 ? `(+${trigger.delay}ms)` : ''}
         `;
 
-        info.appendChild(name);
-        info.appendChild(details);
+        // Action buttons
+        const actions = document.createElement('div');
+        actions.className = 'trigger-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'edit-btn';
+        editBtn.textContent = '✏️ Edit';
+        editBtn.onclick = () => editTrigger(index);
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
-        deleteBtn.textContent = 'X';
+        deleteBtn.textContent = '🗑️ Delete';
         deleteBtn.onclick = () => deleteTrigger(index);
 
-        item.appendChild(info);
-        item.appendChild(deleteBtn);
+        actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
+
+        item.appendChild(header);
+        item.appendChild(details);
+        item.appendChild(actions);
         list.appendChild(item);
     });
 }
 
+function toggleTrigger(index) {
+    triggers[index].enabled = !triggers[index].enabled;
+    chrome.storage.local.set({ triggers }, renderTriggers);
+}
+
 function showAddForm() {
+    document.getElementById('formTitle').textContent = 'Add Trigger';
     document.getElementById('editForm').classList.remove('hidden');
     document.getElementById('addTriggerBtn').classList.add('hidden');
 
@@ -159,9 +199,32 @@ function showAddForm() {
     editingIndex = -1;
 }
 
+function editTrigger(index) {
+    const trigger = triggers[index];
+    editingIndex = index;
+
+    document.getElementById('formTitle').textContent = 'Edit Trigger';
+    document.getElementById('editForm').classList.remove('hidden');
+    document.getElementById('addTriggerBtn').classList.add('hidden');
+
+    // Fill form with existing values
+    document.getElementById('triggerName').value = trigger.name || '';
+    document.getElementById('userType').value = trigger.userType || 'any';
+    document.getElementById('username').value = trigger.username || '';
+    document.getElementById('conditionType').value = trigger.condition || 'contains';
+    document.getElementById('keyword').value = trigger.keyword || '';
+    document.getElementById('actionType').value = trigger.action || 'notification';
+    document.getElementById('chatMessage').value = trigger.message || '';
+    document.getElementById('delay').value = trigger.delay || 0;
+
+    toggleActionFields();
+    toggleUserFields();
+}
+
 function hideAddForm() {
     document.getElementById('editForm').classList.add('hidden');
     document.getElementById('addTriggerBtn').classList.remove('hidden');
+    editingIndex = -1;
 }
 
 function toggleActionFields() {
@@ -217,7 +280,8 @@ function saveTrigger() {
         keyword,
         action,
         message: action === 'chat' ? message : null,
-        delay
+        delay,
+        enabled: editingIndex > -1 ? triggers[editingIndex].enabled : true
     };
 
     if (editingIndex > -1) {

@@ -14,8 +14,11 @@ A Chrome/Brave extension that monitors Kick.com chat and triggers automated acti
 - **👤 User Filtering** - Target specific users or any user
 - **🎯 Match Conditions** - "Contains" or "Exact match"
 - **⏱️ Delay Support** - Add delay before action execution
+- **✏️ Edit Triggers** - Modify existing triggers anytime
+- **🔘 Per-Trigger Toggle** - Enable/disable individual triggers
 - **📁 Import/Export** - Save and load configurations as JSON
 - **🔘 Global Toggle** - Enable/disable monitoring with one click
+- **💾 Persistent Storage** - Settings survive browser restarts
 
 ## 📸 Screenshots
 

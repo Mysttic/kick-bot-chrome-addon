@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <title>Kick Chat Monitor</title>
     <link rel="stylesheet" href="popup.css">
 </head>
@@ -28,10 +29,10 @@
             <!-- Triggers will be added here -->
         </div>
 
-        <button id="addTriggerBtn" class="primary-btn">Add New Trigger</button>
+        <button id="addTriggerBtn" class="primary-btn">+ Add New Trigger</button>
 
         <div id="editForm" class="hidden">
-            <h2>Add/Edit Trigger</h2>
+            <h2 id="formTitle">Add Trigger</h2>
 
             <div class="form-group">
                 <label>Trigger Name:</label>
@@ -87,6 +88,10 @@
                 <button id="saveBtn" class="success-btn">Save</button>
                 <button id="cancelBtn" class="cancel-btn">Cancel</button>
             </div>
+        </div>
+
+        <div class="info-text">
+            💾 Settings are saved automatically and persist after browser restart.
         </div>
     </div>
     <script src="popup.js"></script>
