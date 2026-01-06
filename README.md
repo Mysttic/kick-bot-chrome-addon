@@ -25,9 +25,6 @@ A Chrome/Brave extension that monitors Kick.com chat and triggers automated acti
 ### Adding a Trigger
 ![Add Trigger Form](docs/add-trigger.png)
 
-### Trigger List
-![Trigger List](docs/triggers.png)
-
 ## 🚀 Installation
 
 ### From Chrome Web Store
