@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Kick Chat Monitor</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Kick Chat Monitor</h1>
+
+        <div class="header-controls">
+            <label class="switch">
+                <input type="checkbox" id="globalToggle">
+                <span class="slider round"></span>
+            </label>
+            <span class="status-text" id="statusText">Active</span>
+        </div>
+
+        <div class="controls-bar">
+            <button id="exportBtn" class="secondary-btn">Export Config</button>
+            <button id="importBtn" class="secondary-btn">Import Config</button>
+            <input type="file" id="importFile" accept=".json" class="hidden">
+        </div>
+
+        <div class="triggers-list" id="triggersList">
+            <!-- Triggers will be added here -->
+        </div>
+
+        <button id="addTriggerBtn" class="primary-btn">Add New Trigger</button>
+
+        <div id="editForm" class="hidden">
+            <h2>Add/Edit Trigger</h2>
+
+            <div class="form-group">
+                <label>Trigger Name:</label>
+                <input type="text" id="triggerName" placeholder="e.g. Greeting">
+            </div>
+
+            <div class="form-group">
+                <label>User:</label>
+                <select id="userType">
+                    <option value="any">Any User</option>
+                    <option value="specific">Specific User</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="usernameGroup">
+                <label>Username:</label>
+                <input type="text" id="username" placeholder="Target username">
+            </div>
+
+            <div class="form-group">
+                <label>Condition:</label>
+                <select id="conditionType">
+                    <option value="contains">Message Contains</option>
+                    <option value="exact">Exact Match</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Keyword / Phrase:</label>
+                <input type="text" id="keyword" placeholder="e.g. !hello">
+            </div>
+
+            <div class="form-group">
+                <label>Action:</label>
+                <select id="actionType">
+                    <option value="notification">Notification</option>
+                    <option value="sound">Play Sound</option>
+                    <option value="chat">Send Chat Message</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="chatMessageGroup">
+                <label>Response Message:</label>
+                <input type="text" id="chatMessage" placeholder="Response text...">
+            </div>
+
+            <div class="form-group">
+                <label>Delay (ms):</label>
+                <input type="number" id="delay" value="0" min="0">
+            </div>
+
+            <div class="form-actions">
+                <button id="saveBtn" class="success-btn">Save</button>
+                <button id="cancelBtn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>
