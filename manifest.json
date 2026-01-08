@@ -1,12 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Kick.com Chat Monitor",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "Monitors Kick.com chat and triggers actions based on keywords.",
   "permissions": [
     "storage",
-    "notifications",
-    "scripting"
+    "notifications"
   ],
   "host_permissions": [
     "https://kick.com/*"
