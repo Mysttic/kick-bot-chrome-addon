@@ -105,37 +105,7 @@ See [PRIVACY.md](PRIVACY.md) for full privacy policy.
 | `scripting` | Inject chat monitor script |
 | `kick.com/*` | Access Kick.com chat |
 
-### File Structure
 
-```
-kick-bot-chrome-addon/
-├── manifest.json          # Extension manifest (V3)
-├── PRIVACY.md             # Privacy policy
-├── README.md              # This file
-├── icons/
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-├── src/
-│   ├── background.js      # Service worker for notifications
-│   ├── content.js         # Chat monitoring script
-│   └── popup/
-│       ├── popup.html     # Popup UI
-│       ├── popup.css      # Popup styles
-│       └── popup.js       # Popup logic
-└── docs/
-    └── *.png              # Screenshots
-```
-
-## 📝 Changelog
-
-### v1.0.0
-- Initial release
-- Chat monitoring with MutationObserver
-- Trigger system with conditions
-- Notification, sound, and chat actions
-- Import/Export configuration
-- Global enable/disable toggle
 
 ## 🤝 Contributing
 
